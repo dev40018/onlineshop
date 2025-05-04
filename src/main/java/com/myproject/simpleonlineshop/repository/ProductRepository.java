@@ -8,8 +8,11 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+    // name is an attribute inside Category Object
     List<Product> findByCategoryName(String category);
     List<Product> findByBrand(String brand);
 
     List<Product> findByCategoryNameAndBrand(String category, String brand);
+
+    List<Product> findByName(String name);
 }
