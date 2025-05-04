@@ -4,11 +4,13 @@ import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 import com.myproject.simpleonlineshop.model.Product;
 import com.myproject.simpleonlineshop.repository.ProductRepository;
 import com.myproject.simpleonlineshop.service.ProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+// @RequiredArgsConstructor you can use this to automate constructor-based injection
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
