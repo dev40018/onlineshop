@@ -4,26 +4,41 @@ import com.myproject.simpleonlineshop.dto.AddProductRequestDto;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 import com.myproject.simpleonlineshop.model.Category;
 import com.myproject.simpleonlineshop.model.Product;
+import com.myproject.simpleonlineshop.repository.CategoryRepository;
 import com.myproject.simpleonlineshop.repository.ProductRepository;
 import com.myproject.simpleonlineshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 // @RequiredArgsConstructor you can use this to automate constructor-based injection
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
     public Product addProduct(AddProductRequestDto addProductRequestDto) {
-        return null;
+
+
+        //check if the category is found in database, if yes, set it as a new product category
+        Category category = Optional.ofNullable(categoryRepository.findByName(addProductRequestDto.getCategory().getName()))
+                // if no, save it as a new category
+                .orElseGet(() -> {
+                    Category newCategory = new Category(addProductRequestDto.getCategory().getName());
+                    return categoryRepository.save(newCategory);
+                });
+        //then set it as a new product category
+        addProductRequestDto.setCategory(category);
+        return productRepository.save(toProduct(addProductRequestDto, category));
     }
 
     private Product toProduct(AddProductRequestDto productRequestDto, Category category){
