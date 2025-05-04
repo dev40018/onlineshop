@@ -69,7 +69,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product UpdateProduct(Product updateProductRequest, Long id) {
+    public Product UpdateProduct(UpdateProductRequestDto updateProductRequest, Long id) {
         return null;
     }
     private Product updateExistingProduct(Product existingProduct, UpdateProductRequestDto requestDto){
