@@ -30,7 +30,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProductById(Long id) {
-
+        productRepository.findById(id)
+                .ifPresentOrElse(
+                        productRepository::delete,
+                        () -> {throw new ResourceNotFoundException("no such product");}
+                );
     }
 
     @Override
