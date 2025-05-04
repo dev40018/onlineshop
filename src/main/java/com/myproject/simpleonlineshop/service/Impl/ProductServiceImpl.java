@@ -1,5 +1,6 @@
 package com.myproject.simpleonlineshop.service.Impl;
 
+import com.myproject.simpleonlineshop.dto.AddProductRequestDto;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 import com.myproject.simpleonlineshop.model.Product;
 import com.myproject.simpleonlineshop.repository.ProductRepository;
@@ -20,7 +21,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product addProduct(Product product) {
+    public Product addProduct(AddProductRequestDto product) {
         return null;
     }
 

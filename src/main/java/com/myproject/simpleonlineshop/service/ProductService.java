@@ -1,6 +1,7 @@
 package com.myproject.simpleonlineshop.service;
 
 
+import com.myproject.simpleonlineshop.dto.AddProductRequestDto;
 import com.myproject.simpleonlineshop.model.Product;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 public interface ProductService {
 
 
-    Product addProduct(Product product);
+    Product addProduct(AddProductRequestDto product);
     Product getProductById(Long id);
     void deleteProductById(Long id);
     Product UpdateProduct(Product updateProductRequest, Long id);
