@@ -9,7 +9,7 @@ import java.util.List;
 public interface ProductService {
 
 
-    Product addProduct(AddProductRequestDto product);
+    Product addProduct(AddProductRequestDto addProductRequestDto);
     Product getProductById(Long id);
     void deleteProductById(Long id);
     Product UpdateProduct(Product updateProductRequest, Long id);

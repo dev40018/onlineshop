@@ -2,6 +2,7 @@ package com.myproject.simpleonlineshop.service.Impl;
 
 import com.myproject.simpleonlineshop.dto.AddProductRequestDto;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
+import com.myproject.simpleonlineshop.model.Category;
 import com.myproject.simpleonlineshop.model.Product;
 import com.myproject.simpleonlineshop.repository.ProductRepository;
 import com.myproject.simpleonlineshop.service.ProductService;
@@ -21,8 +22,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product addProduct(AddProductRequestDto product) {
+    public Product addProduct(AddProductRequestDto addProductRequestDto) {
         return null;
+    }
+
+    private Product toProduct(AddProductRequestDto productRequestDto, Category category){
+        return new Product(
+                productRequestDto.getName(),
+                productRequestDto.getBrand(),
+                productRequestDto.getDescription(),
+                productRequestDto.getPrice(),
+                productRequestDto.getQuantityInInventory(),
+                category
+        );
     }
 
     @Override
