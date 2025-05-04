@@ -1,6 +1,7 @@
 package com.myproject.simpleonlineshop.service.Impl;
 
 import com.myproject.simpleonlineshop.dto.AddProductRequestDto;
+import com.myproject.simpleonlineshop.dto.UpdateProductRequestDto;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 import com.myproject.simpleonlineshop.model.Category;
 import com.myproject.simpleonlineshop.model.Product;
@@ -70,6 +71,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product UpdateProduct(Product updateProductRequest, Long id) {
         return null;
+    }
+    private Product updateExistingProduct(Product existingProduct, UpdateProductRequestDto requestDto){
+        existingProduct.setName(requestDto.getName());
+        existingProduct.setBrand(requestDto.getBrand());
+        existingProduct.setDescription(requestDto.getDescription());
+        existingProduct.setPrice(requestDto.getPrice());
+        existingProduct.setQuantityInInventory(requestDto.getQuantityInInventory());
+
+        Category category = categoryRepository.findByName(requestDto.getCategory().getName());
+        existingProduct.setCategory(category);
+        return existingProduct;
     }
 
     @Override
