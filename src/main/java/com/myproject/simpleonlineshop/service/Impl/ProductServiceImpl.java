@@ -70,7 +70,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product updateProduct(UpdateProductRequestDto updateProductRequest, Long id) {
-        productRepository.findById(id).map(existingProduct -> updateExistingProduct(existingProduct, updateProductRequest))
+        return productRepository.findById(id).map(existingProduct -> updateExistingProduct(existingProduct, updateProductRequest))
                 .map(productRepository::save)
                 .orElseThrow(() -> new ResourceNotFoundException("product not found"));
     }
