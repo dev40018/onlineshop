@@ -1,5 +1,6 @@
 package com.myproject.simpleonlineshop.service.Impl;
 
+import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 import com.myproject.simpleonlineshop.model.Product;
 import com.myproject.simpleonlineshop.repository.ProductRepository;
 import com.myproject.simpleonlineshop.service.ProductService;
@@ -23,7 +24,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProductById(Long id) {
-        return null;
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product with id: " + id + "doesn't exists"));
     }
 
     @Override
