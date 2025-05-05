@@ -1,5 +1,6 @@
 package com.myproject.simpleonlineshop.service.Impl;
 
+import com.myproject.simpleonlineshop.exception.AlreadyExistsException;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 import com.myproject.simpleonlineshop.model.Category;
 import com.myproject.simpleonlineshop.repository.CategoryRepository;
@@ -9,6 +10,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Optional is a container object that may or may not contain a non-null value.
+ * It's designed to prevent NullPointerExceptions and provide a clearer API for handling potentially absent values.
+ */
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
@@ -36,10 +41,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category addCategory(Category category) {
-        return   return Optional.of(category)
+        //Optional.of() when you are certain the value is not null and want to wrap it in an Optional.
+        return  Optional.of(category)
                 .filter(checkingCategory -> !categoryRepository.existsByName(checkingCategory.getName()) )
-                .map(c -> categoryRepository.save(c))
-                .orElseThrow(() -> new AlreadyExistsException(category.getName() + "category Already Exists"));;
+                .map(categoryRepository::save)
+                .orElseThrow(() -> new AlreadyExistsException(category.getName() + "category Already Exists"));
     }
 
     @Override
