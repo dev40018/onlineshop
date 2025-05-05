@@ -7,6 +7,7 @@ import com.myproject.simpleonlineshop.service.CategoryService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -35,12 +36,19 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category addCategory(Category category) {
-        return null;
+        return   return Optional.of(category)
+                .filter(checkingCategory -> !categoryRepository.existsByName(checkingCategory.getName()) )
+                .map(c -> categoryRepository.save(c))
+                .orElseThrow(() -> new AlreadyExistsException(category.getName() + "category Already Exists"));;
     }
 
     @Override
     public Category updateCategory(Category category, Long id) {
-        return null;
+        return Optional.ofNullable(getCategoryById(id))
+                .map(oldCategory -> {
+                    oldCategory.setName(category.getName());
+                    return categoryRepository.save(oldCategory);
+                }).orElseThrow(() -> new ResourceNotFoundException("No such Category Exists"));
     }
 
     @Override
