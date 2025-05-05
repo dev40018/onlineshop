@@ -1,5 +1,6 @@
 package com.myproject.simpleonlineshop.service.Impl;
 
+import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 import com.myproject.simpleonlineshop.model.Category;
 import com.myproject.simpleonlineshop.repository.CategoryRepository;
 import com.myproject.simpleonlineshop.service.CategoryService;
@@ -18,17 +19,18 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category getCategoryById(Long id) {
-        return null;
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category Not Found "));
     }
 
     @Override
     public Category getCategoryByName(String name) {
-        return null;
+        return categoryRepository.findByName(name);
     }
 
     @Override
     public List<Category> getAllCategories() {
-        return List.of();
+        return categoryRepository.findAll();
     }
 
     @Override
@@ -43,6 +45,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategoryById(Long id) {
-
+        categoryRepository.findById(id).ifPresentOrElse(
+                categoryRepository::delete,
+                () -> {throw new ResourceNotFoundException("No such Category exists");}
+        );
     }
 }
