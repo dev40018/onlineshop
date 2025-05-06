@@ -1,5 +1,6 @@
 package com.myproject.simpleonlineshop.service;
 
+import com.myproject.simpleonlineshop.dto.ImageDto;
 import com.myproject.simpleonlineshop.model.Image;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,6 +10,6 @@ public interface ImageService {
 
     Image getImageById(Long id);
     void deleteImageById(Long id);
-    List<Image> saveImages(List<MultipartFile> files, Long productId);
+    List<ImageDto> saveImages(List<MultipartFile> files, Long productId);
     Image updateImage(MultipartFile file, Long imageId);
 }
