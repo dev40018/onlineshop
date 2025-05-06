@@ -3,14 +3,17 @@ package com.myproject.simpleonlineshop.controller;
 
 import com.myproject.simpleonlineshop.dto.ApiResponse;
 import com.myproject.simpleonlineshop.dto.ImageDto;
+import com.myproject.simpleonlineshop.model.Image;
 import com.myproject.simpleonlineshop.service.ImageService;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -40,5 +43,50 @@ public class ImageController {
                     .body(new ApiResponse("Image Uploading was NOT Successful: ", e.getMessage()));
         }
 
+    }
+    @GetMapping("image/download/{imageId}")
+    public ResponseEntity<Resource> downloadImage(
+            @PathVariable("imageId") Long imageId) throws SQLException {
+
+        Image imageById = imageService.getImageById(imageId);
+        /*
+        What getBytes() Does:
+            Reads a specific number of bytes (length) starting from a specific position (pos) in the BLOB.
+            Returns those bytes as a byte[] array.
+            If the position is out of range or the BLOB is shorter than requested, it throws a SQLException.
+         */
+        ByteArrayResource resource = new ByteArrayResource(
+                imageById.getImage().getBytes( 1, (int)imageById.getImage().length() ));
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(imageById.getFileType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imageById.getFileName() + "\"")
+                .body(resource);
+        /*
+        .contentType(MediaType.parseMediaType(imageById.getFileType()))
+            Sets the Content-Type header of the response (i.e., what kind of file is being returned).
+
+            imageById.getFileType() returns a string, e.g., "image/jpeg", "application/pdf", etc.
+
+            MediaType.parseMediaType(...) converts that string into a MediaType object.
+
+            Purpose: Tell the browser/client what type of file is being sent.
+
+        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imageById.getFileName() + "\"")
+                This sets the Content-Disposition header.
+
+                "attachment; filename=\"..." tells the browser to:
+
+                Treat the content as a downloadable file.
+
+                Use the specified filename (imageById.getFileName()), e.g., "my_photo.jpg".
+
+                Purpose: Make the browser show a download dialog with a custom file name.
+
+            .body(resource)
+                    resource is typically an object that implements the Resource interface (like ByteArrayResource, InputStreamResource, etc.).
+
+                    This sets the actual body content of the HTTP response — the file data.
+
+                    Purpose: Send the binary data (like an image or document) to the client.
+         */
     }
 }
