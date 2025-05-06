@@ -63,9 +63,11 @@ public class ImageServiceImpl implements ImageService {
                  image.setDownloadUrl(specificImageDownloadUrl);
                  // but the problem is id is generated after save() method
                  Image savedImage =  imageRepository.save(image);
+
+                 // No need for second save - Hibernate tracks changes, not using saveAndFlush()
+                 //JPA will automatically persist changes during transaction commit
                  savedImage.setDownloadUrl(downloadUrl + savedImage.getId());
-                 savedImage.setDownloadUrl(downloadUrl + savedImage.getId());
-                 // No need for second save - Hibernate tracks changes
+
 
                  ImageDto imageDto = new ImageDto();
                  imageDto.setImageName(savedImage.getFileName());
@@ -78,6 +80,13 @@ public class ImageServiceImpl implements ImageService {
              }
         }
         return savedImageDtos;
+    }
+    private ImageDto convertToDto(Image image) {
+        ImageDto dto = new ImageDto();
+        dto.setImageId(image.getId());
+        dto.setImageName(image.getFileName());
+        dto.setDownloadUrl(image.getDownloadUrl());
+        return dto;
     }
 
     @Override
