@@ -35,6 +35,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    @Transactional
     public void deleteImageById(Long id) {
         imageRepository.findById(id)
                 .ifPresentOrElse(imageRepository::delete,
@@ -79,6 +80,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    @Transactional
     public Image updateImage(MultipartFile file, Long imageId) {
         Image image = getImageById(imageId);
         try {

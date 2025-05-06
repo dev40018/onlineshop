@@ -6,6 +6,7 @@ import com.myproject.simpleonlineshop.model.Category;
 import com.myproject.simpleonlineshop.repository.CategoryRepository;
 import com.myproject.simpleonlineshop.service.CategoryService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public Category addCategory(Category category) {
         //Optional.of() when you are certain the value is not null and want to wrap it in an Optional.
         return  Optional.of(category)
@@ -49,6 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public Category updateCategory(Category category, Long id) {
         return Optional.ofNullable(getCategoryById(id))
                 .map(oldCategory -> {
@@ -58,6 +61,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public void deleteCategoryById(Long id) {
         categoryRepository.findById(id).ifPresentOrElse(
                 categoryRepository::delete,

@@ -10,6 +10,7 @@ import com.myproject.simpleonlineshop.repository.ProductRepository;
 import com.myproject.simpleonlineshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +28,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public Product addProduct(AddProductRequestDto addProductRequestDto) {
 
 
@@ -60,6 +62,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void deleteProductById(Long id) {
         productRepository.findById(id)
                 .ifPresentOrElse(
@@ -69,6 +72,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public Product updateProduct(UpdateProductRequestDto updateProductRequest, Long id) {
         return productRepository.findById(id).map(existingProduct -> updateExistingProduct(existingProduct, updateProductRequest))
                 .map(productRepository::save)
