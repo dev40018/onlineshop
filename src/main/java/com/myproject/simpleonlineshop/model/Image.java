@@ -23,6 +23,7 @@ public class Image {
     private String fileType;
 
     @Lob //Blob Specifier for database, used to store large amounts of binary data in a database
+    //@Basic(fetch = FetchType.LAZY) only will appear in response when  you specify explicitly
     private Blob image;
 
     private String downloadUrl;

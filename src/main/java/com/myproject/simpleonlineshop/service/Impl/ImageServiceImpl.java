@@ -8,6 +8,9 @@ import com.myproject.simpleonlineshop.service.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.sql.rowset.serial.SerialBlob;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 @Service
@@ -36,10 +39,20 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public List<Image> saveImages(List<MultipartFile> files, Long productId) {
+
         return List.of();
     }
 
     @Override
     public Image updateImage(MultipartFile file, Long imageId) {
+        Image image = getImageById(imageId);
+        try {
+            image.setFileName(file.getOriginalFilename()); // getting image file name
+            // Transferring binary data between Java applications and databases because object needs to be serialized to
+            image.setImage(new SerialBlob(file.getBytes()));
+            return imageRepository.save(image);
+        }catch (IOException | SQLException e){
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }
