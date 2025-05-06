@@ -64,7 +64,8 @@ public class ImageServiceImpl implements ImageService {
                  // but the problem is id is generated after save() method
                  Image savedImage =  imageRepository.save(image);
                  savedImage.setDownloadUrl(downloadUrl + savedImage.getId());
-                 imageRepository.save(savedImage);
+                 savedImage.setDownloadUrl(downloadUrl + savedImage.getId());
+                 // No need for second save - Hibernate tracks changes
 
                  ImageDto imageDto = new ImageDto();
                  imageDto.setImageName(savedImage.getFileName());
