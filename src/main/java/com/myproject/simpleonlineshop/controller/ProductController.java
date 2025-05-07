@@ -76,6 +76,26 @@ public class ProductController {
                     .body(new ApiResponse("Error:", e.getMessage()));
         }
     }
+    @GetMapping("by/brand-and-name")
+    public ResponseEntity<ApiResponse> getProductByBrandAndName(
+            @RequestParam String brand,
+            @RequestParam String name
+    ){
+        try {
+            List<Product> productsByBrandAndName = productService.getProductsByBrandAndName(brand, name);
+            if(productsByBrandAndName.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse("Not Found", null));
+            }
+
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .body(new ApiResponse("Found",productsByBrandAndName));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error:", e.getMessage()));
+        }
+
+    }
 
 
 
