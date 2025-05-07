@@ -3,6 +3,7 @@ package com.myproject.simpleonlineshop.controller;
 
 import com.myproject.simpleonlineshop.dto.ApiResponse;
 import com.myproject.simpleonlineshop.exception.AlreadyExistsException;
+import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 import com.myproject.simpleonlineshop.model.Category;
 import com.myproject.simpleonlineshop.service.CategoryService;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,16 @@ public class CategoryController {
                 State Mismatches: If a client requests an operation that is not permissible given the resource's current state (e.g., trying to delete a resource that is already marked as deleted or is locked for modifications).
                 Data Integrity Violations: The request might violate predefined rules or constraints for the data, such as attempting to establish a relationship that would create an invalid state in a database.
              */
+        }
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse> getCategoryById(@PathVariable("id") Long id){
+        try {
+            Category theCategory = categoryService.getCategoryById(id);
+            return ResponseEntity.ok(new ApiResponse("Found", theCategory));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse( e.getMessage(), null));
         }
     }
 
