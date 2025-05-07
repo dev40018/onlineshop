@@ -118,4 +118,18 @@ public class ImageController {
             Client Awareness – Lets the client know the failure is not their fault (unlike 4xx errors, which indicate client-side issues).
          */
     }
+    @DeleteMapping("/image/{imageId}/delete")
+    public ResponseEntity<ApiResponse> deleteImage(@PathVariable("imageId") Long imageId){
+        // first we find image
+        try {
+            Image imageById = imageService.getImageById(imageId);
+            if (imageById != null){
+                imageService.deleteImageById(imageId);
+                return ResponseEntity.ok(new ApiResponse("Delete Successful", null));
+            }
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse("Delete failed", INTERNAL_SERVER_ERROR));
+    }
 }
