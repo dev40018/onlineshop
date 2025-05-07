@@ -65,6 +65,17 @@ public class ProductController {
                     .body(new ApiResponse("Error:", e.getMessage()));
         }
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteProduct(@PathVariable("id") Long id){
+        try {
+            productService.deleteProductById(id);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse("Deleted", null));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error:", e.getMessage()));
+        }
+    }
 
 
 
