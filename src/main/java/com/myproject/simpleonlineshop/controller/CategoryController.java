@@ -57,5 +57,15 @@ public class CategoryController {
                     .body(new ApiResponse( e.getMessage(), null));
         }
     }
+    @GetMapping("/{name}")
+    public ResponseEntity<ApiResponse> getCategoryByName(@PathVariable("name") String name){
+        try {
+            Category theCategory = categoryService.getCategoryByName(name);
+            return ResponseEntity.ok(new ApiResponse("Found", theCategory));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse( e.getMessage(), null));
+        }
+    }
 
 }
