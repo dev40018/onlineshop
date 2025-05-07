@@ -1,16 +1,15 @@
 package com.myproject.simpleonlineshop.controller;
 
 
+import com.myproject.simpleonlineshop.dto.AddProductRequestDto;
 import com.myproject.simpleonlineshop.dto.ApiResponse;
+import com.myproject.simpleonlineshop.exception.AlreadyExistsException;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 import com.myproject.simpleonlineshop.model.Product;
 import com.myproject.simpleonlineshop.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,6 +37,18 @@ public class ProductController {
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<ApiResponse> addProduct(@RequestBody AddProductRequestDto product){
+        try {
+            Product theProduct = productService.addProduct(product);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new ApiResponse("Product Created Successfully", theProduct));
+        } catch (AlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error:", e.getMessage()));
         }
     }
 
