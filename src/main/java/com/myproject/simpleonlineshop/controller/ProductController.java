@@ -3,6 +3,7 @@ package com.myproject.simpleonlineshop.controller;
 
 import com.myproject.simpleonlineshop.dto.AddProductRequestDto;
 import com.myproject.simpleonlineshop.dto.ApiResponse;
+import com.myproject.simpleonlineshop.dto.UpdateProductRequestDto;
 import com.myproject.simpleonlineshop.exception.AlreadyExistsException;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 import com.myproject.simpleonlineshop.model.Product;
@@ -47,6 +48,19 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(new ApiResponse("Product Created Successfully", theProduct));
         } catch (AlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error:", e.getMessage()));
+        }
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse> updateProduct(
+            @PathVariable("id") Long id,
+            @RequestBody UpdateProductRequestDto product){
+        try {
+            Product theProduct = productService.updateProduct(product,id);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse("Created", theProduct));
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error:", e.getMessage()));
         }
