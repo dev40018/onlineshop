@@ -2,6 +2,7 @@ package com.myproject.simpleonlineshop.controller;
 
 
 import com.myproject.simpleonlineshop.dto.ApiResponse;
+import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 import com.myproject.simpleonlineshop.model.Product;
 import com.myproject.simpleonlineshop.service.ProductService;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,18 @@ public class ProductController {
     public ResponseEntity<ApiResponse> getAllProducts(){
         List<Product> allProducts = productService.getAllProducts();
         return ResponseEntity.ok(new ApiResponse("Success", allProducts));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse> getProductById(@PathVariable("id") Long id){
+        try {
+            Product productById = productService.getProductById(id);
+
+            return ResponseEntity.ok(new ApiResponse("Found", productById));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
     }
 
 
