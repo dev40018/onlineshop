@@ -3,11 +3,13 @@ package com.myproject.simpleonlineshop.controller;
 
 import com.myproject.simpleonlineshop.dto.ApiResponse;
 import com.myproject.simpleonlineshop.dto.ImageDto;
+import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 import com.myproject.simpleonlineshop.model.Image;
 import com.myproject.simpleonlineshop.service.ImageService;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -87,6 +89,33 @@ public class ImageController {
                     This sets the actual body content of the HTTP response — the file data.
 
                     Purpose: Send the binary data (like an image or document) to the client.
+         */
+    }
+    @PutMapping("/image/{imageId}/update")
+    public ResponseEntity<ApiResponse> updateImage(
+            @PathVariable("imageId") Long imageId,
+            @RequestBody MultipartFile file
+    ){
+        // first we find image
+        try {
+            Image imageById = imageService.getImageById(imageId);
+            if (imageById != null){
+                Image updatedImage = imageService.updateImage(file, imageId);
+                return ResponseEntity.ok(new ApiResponse("Update Successful", null));
+            }
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse("Update failed", INTERNAL_SERVER_ERROR));
+        /*
+        Purpose of 500 INTERNAL_SERVER_ERROR:
+            Generic Server Failure – It informs the client that something went wrong on the server, but the server cannot specify the exact problem.
+
+            Fallback Error – Used when no other 5xx error code (e.g., 502 Bad Gateway, 503 Service Unavailable) fits the situation.
+
+            Security Consideration – Prevents exposing sensitive internal errors (e.g., database failures, unhandled exceptions) to the client.
+
+            Client Awareness – Lets the client know the failure is not their fault (unlike 4xx errors, which indicate client-side issues).
          */
     }
 }
