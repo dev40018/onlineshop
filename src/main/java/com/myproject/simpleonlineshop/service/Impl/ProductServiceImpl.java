@@ -3,12 +3,12 @@ package com.myproject.simpleonlineshop.service.Impl;
 import com.myproject.simpleonlineshop.dto.AddProductRequestDto;
 import com.myproject.simpleonlineshop.dto.UpdateProductRequestDto;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
+
 import com.myproject.simpleonlineshop.model.Category;
 import com.myproject.simpleonlineshop.model.Product;
 import com.myproject.simpleonlineshop.repository.CategoryRepository;
 import com.myproject.simpleonlineshop.repository.ProductRepository;
 import com.myproject.simpleonlineshop.service.ProductService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +22,11 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
 
+
     public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+
     }
 
     @Override
@@ -41,16 +43,15 @@ public class ProductServiceImpl implements ProductService {
                 });
         //then set it as a new product category
         addProductRequestDto.setCategory(category);
-        return productRepository.save(toProduct(addProductRequestDto, category));
+        return productRepository.save(convertAddProductRequestToProduct(addProductRequestDto, category));
     }
-
-    private Product toProduct(AddProductRequestDto productRequestDto, Category category){
+    private Product convertAddProductRequestToProduct(AddProductRequestDto productRequest, Category category){
         return new Product(
-                productRequestDto.getName(),
-                productRequestDto.getBrand(),
-                productRequestDto.getDescription(),
-                productRequestDto.getPrice(),
-                productRequestDto.getQuantityInInventory(),
+                productRequest.getName(),
+                productRequest.getBrand(),
+                productRequest.getDescription(),
+                productRequest.getPrice(),
+                productRequest.getQuantityInInventory(),
                 category
         );
     }
