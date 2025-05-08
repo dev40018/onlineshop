@@ -2,6 +2,7 @@ package com.myproject.simpleonlineshop.service;
 
 
 import com.myproject.simpleonlineshop.dto.AddProductRequestDto;
+import com.myproject.simpleonlineshop.dto.ProductDto;
 import com.myproject.simpleonlineshop.dto.UpdateProductRequestDto;
 import com.myproject.simpleonlineshop.model.Product;
 
@@ -11,6 +12,9 @@ public interface ProductService {
 
 
     Product addProduct(AddProductRequestDto addProductRequestDto);
+
+    List<ProductDto> getProductDtos(List<Product> products);
+
     Product getProductById(Long id);
     void deleteProductById(Long id);
     Product updateProduct(UpdateProductRequestDto updateProductRequest, Long id);

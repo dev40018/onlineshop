@@ -12,11 +12,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ProudctMapperImpl implements ProductMapper {
+public class ProductMapperImpl implements ProductMapper {
     private final ModelMapper modelMapper;
     private final ImageRepository imageRepository;
 
-    public ProudctMapperImpl(ModelMapper modelMapper, ImageRepository imageRepository) {
+    public ProductMapperImpl(ModelMapper modelMapper, ImageRepository imageRepository) {
         this.modelMapper = modelMapper;
         this.imageRepository = imageRepository;
     }

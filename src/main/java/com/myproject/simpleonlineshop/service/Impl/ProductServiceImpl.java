@@ -1,15 +1,16 @@
 package com.myproject.simpleonlineshop.service.Impl;
 
 import com.myproject.simpleonlineshop.dto.AddProductRequestDto;
+import com.myproject.simpleonlineshop.dto.ProductDto;
 import com.myproject.simpleonlineshop.dto.UpdateProductRequestDto;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 
+import com.myproject.simpleonlineshop.mapper.ProductMapper;
 import com.myproject.simpleonlineshop.model.Category;
 import com.myproject.simpleonlineshop.model.Product;
 import com.myproject.simpleonlineshop.repository.CategoryRepository;
 import com.myproject.simpleonlineshop.repository.ProductRepository;
 import com.myproject.simpleonlineshop.service.ProductService;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,14 +23,14 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final ModelMapper modelMapper;
+    private final ProductMapper productMapper;
 
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, ModelMapper modelMapper) {
+
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
-
-        this.modelMapper = modelMapper;
+        this.productMapper = productMapper;
     }
 
     @Override
@@ -57,6 +58,10 @@ public class ProductServiceImpl implements ProductService {
                 productRequest.getQuantityInInventory(),
                 category
         );
+    }
+    @Override
+    public List<ProductDto> getProductDtos(List<Product> products){
+        return products.stream().map(productMapper::toProductDto).toList();
     }
 
     @Override
