@@ -76,7 +76,7 @@ public class ProductController {
                     .body(new ApiResponse("Error:", e.getMessage()));
         }
     }
-    @GetMapping("by/brand-and-name")
+    @GetMapping("/brand-and-name")
     public ResponseEntity<ApiResponse> getProductByBrandAndName(
             @RequestParam String brand,
             @RequestParam String name
@@ -90,6 +90,26 @@ public class ProductController {
 
             return ResponseEntity.status(HttpStatus.FOUND)
                     .body(new ApiResponse("Found",productsByBrandAndName));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error:", e.getMessage()));
+        }
+
+    }
+    @GetMapping("/category-and-brand")
+    public ResponseEntity<ApiResponse> getProductByCategoryAndBrand(
+            @RequestParam String category,
+            @RequestParam String brand
+    ){
+        try {
+            List<Product> productsByCategoryAndBrand = productService.getProductsByCategoryAndBrand(category, brand);
+            // method implemented in service doesn't provide any exception so
+            if(productsByCategoryAndBrand.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse("Not Found", null));
+            }
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .body(new ApiResponse("Found",productsByCategoryAndBrand));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error:", e.getMessage()));
