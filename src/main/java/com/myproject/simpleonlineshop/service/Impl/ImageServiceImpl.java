@@ -58,7 +58,7 @@ public class ImageServiceImpl implements ImageService {
                 image.setImage(new SerialBlob(file.getBytes()));
                 image.setProduct(product); // this product is the product that we found
                  // now we need to build a downloadUrl
-                 String downloadUrl = "${api.prefix}/images/image/download/";
+                 String downloadUrl = "/api/v1/images/image/download/";
                  String specificImageDownloadUrl = downloadUrl + image.getId();
                  image.setDownloadUrl(specificImageDownloadUrl);
                  // but the problem is id is generated after save() method
@@ -70,8 +70,8 @@ public class ImageServiceImpl implements ImageService {
 
 
                  ImageDto imageDto = new ImageDto();
-                 imageDto.setImageName(savedImage.getFileName());
-                 imageDto.setImageId(savedImage.getId());
+                 imageDto.setFileName(savedImage.getFileName());
+                 imageDto.setId(savedImage.getId());
                  imageDto.setDownloadUrl(savedImage.getDownloadUrl());
                  savedImageDtos.add(imageDto);
 
@@ -83,8 +83,8 @@ public class ImageServiceImpl implements ImageService {
     }
     private ImageDto convertToDto(Image image) {
         ImageDto dto = new ImageDto();
-        dto.setImageId(image.getId());
-        dto.setImageName(image.getFileName());
+        dto.setId(image.getId());
+        dto.setFileName(image.getFileName());
         dto.setDownloadUrl(image.getDownloadUrl());
         return dto;
     }

@@ -59,7 +59,7 @@ public class ProductController {
         try {
             Product theProduct = productService.updateProduct(product,id);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ApiResponse("Created", theProduct));
+                    .body(new ApiResponse("Product Updated", theProduct));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error:", e.getMessage()));
@@ -147,7 +147,7 @@ public class ProductController {
                         .body(new ApiResponse( "product with brandName: " +brand + " NOT Found", null));
             }
             return ResponseEntity.status(HttpStatus.FOUND)
-                    .body(new ApiResponse("product with brandName: " +brand + " Found",productsByBrand));
+                    .body(new ApiResponse("product with brandName: " +brand + ", Found",productsByBrand));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error:", e.getMessage()));
