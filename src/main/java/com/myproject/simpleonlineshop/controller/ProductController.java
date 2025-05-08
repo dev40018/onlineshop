@@ -116,6 +116,78 @@ public class ProductController {
         }
 
     }
+    @GetMapping("/{name}")
+    public ResponseEntity<ApiResponse> getProductByName(
+            @PathVariable("name") String name
+    ){
+        try {
+            List<Product> productsByName = productService.getProductByName(name);
+            // method implemented in service doesn't provide any exception so
+            if(productsByName.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse("Not Found", null));
+            }
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .body(new ApiResponse("Found",productsByName));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error:", e.getMessage()));
+        }
+
+    }
+    @GetMapping("/brand")
+    public ResponseEntity<ApiResponse> getProductByBrand(
+            @RequestParam String brand
+    ){
+        try {
+            List<Product> productsByBrand = productService.getProductsByBrand(brand);
+            // method implemented in service doesn't provide any exception so
+            if(productsByBrand.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse( "product with brandName: " +brand + " NOT Found", null));
+            }
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .body(new ApiResponse("product with brandName: " +brand + " Found",productsByBrand));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error:", e.getMessage()));
+        }
+
+    }
+    @GetMapping("/category")
+    public ResponseEntity<ApiResponse> getProductByCategory(
+            @RequestParam String category
+    ){
+        try {
+            List<Product> productsByCategory = productService.getProductsByCategory(category);
+            // method implemented in service doesn't provide any exception so
+            if(productsByCategory.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse("Not Found", null));
+            }
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .body(new ApiResponse("Found",productsByCategory));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error:", e.getMessage()));
+        }
+
+    }
+    @GetMapping("/countBy/brand-and-name")
+    public ResponseEntity<ApiResponse> getProductsAmountByBrandAndName(
+            @RequestParam String brand,
+            @RequestParam String name
+    ){
+        try {
+            var products = productService.countProductsByBrandAndName(brand, name);
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .body(new ApiResponse("Product Count",products));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error:", e.getMessage()));
+        }
+
+    }
 
 
 
