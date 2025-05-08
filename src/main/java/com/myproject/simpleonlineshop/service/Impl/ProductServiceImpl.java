@@ -9,6 +9,7 @@ import com.myproject.simpleonlineshop.model.Product;
 import com.myproject.simpleonlineshop.repository.CategoryRepository;
 import com.myproject.simpleonlineshop.repository.ProductRepository;
 import com.myproject.simpleonlineshop.service.ProductService;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,12 +22,14 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ModelMapper modelMapper;
 
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, ModelMapper modelMapper) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
 
+        this.modelMapper = modelMapper;
     }
 
     @Override
