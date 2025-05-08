@@ -121,7 +121,7 @@ public class ProductController {
             @PathVariable("name") String name
     ){
         try {
-            List<Product> productsByName = productService.getProductByName(name);
+            List<Product> productsByName = productService.getProductsByName(name);
             // method implemented in service doesn't provide any exception so
             if(productsByName.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
