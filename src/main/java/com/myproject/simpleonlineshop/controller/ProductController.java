@@ -3,38 +3,48 @@ package com.myproject.simpleonlineshop.controller;
 
 import com.myproject.simpleonlineshop.dto.AddProductRequestDto;
 import com.myproject.simpleonlineshop.dto.ApiResponse;
+import com.myproject.simpleonlineshop.dto.ProductDto;
 import com.myproject.simpleonlineshop.dto.UpdateProductRequestDto;
 import com.myproject.simpleonlineshop.exception.AlreadyExistsException;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
+import com.myproject.simpleonlineshop.mapper.ProductMapper;
 import com.myproject.simpleonlineshop.model.Product;
 import com.myproject.simpleonlineshop.service.ProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "${api.prefix}/products")
 public class ProductController {
 
     private final ProductService productService;
+    private final ProductMapper productMapper;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, ProductMapper productMapper) {
         this.productService = productService;
+        this.productMapper = productMapper;
     }
+
+    @Transactional
     @GetMapping
     public ResponseEntity<ApiResponse> getAllProducts(){
         List<Product> allProducts = productService.getAllProducts();
-        return ResponseEntity.ok(new ApiResponse("Success", allProducts));
+        List<ProductDto> productDtos = productMapper.getConvertToProductDtos(allProducts);
+        return ResponseEntity.ok(new ApiResponse("Success", productDtos));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getProductById(@PathVariable("id") Long id){
         try {
             Product productById = productService.getProductById(id);
-
-            return ResponseEntity.ok(new ApiResponse("Found", productById));
+            ProductDto productDto = productMapper.toProductDto(productById);
+            return ResponseEntity.ok(new ApiResponse("Found", productDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse(e.getMessage(), null));
@@ -83,13 +93,14 @@ public class ProductController {
     ){
         try {
             List<Product> productsByBrandAndName = productService.getProductsByBrandAndName(brand, name);
-            if(productsByBrandAndName.isEmpty()){
+            List<ProductDto> productDtosByBrandAndName = productsByBrandAndName.stream().map(productMapper::toProductDto).toList();
+            if(productDtosByBrandAndName.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new ApiResponse("Not Found", null));
             }
 
             return ResponseEntity.status(HttpStatus.FOUND)
-                    .body(new ApiResponse("Found",productsByBrandAndName));
+                    .body(new ApiResponse("Found",productDtosByBrandAndName));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error:", e.getMessage()));
@@ -103,13 +114,14 @@ public class ProductController {
     ){
         try {
             List<Product> productsByCategoryAndBrand = productService.getProductsByCategoryAndBrand(category, brand);
+            List<ProductDto> productDtosByCategoryAndBrand = productsByCategoryAndBrand.stream().map(productMapper::toProductDto).toList();
             // method implemented in service doesn't provide any exception so
-            if(productsByCategoryAndBrand.isEmpty()){
+            if(productDtosByCategoryAndBrand.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new ApiResponse("Not Found", null));
             }
             return ResponseEntity.status(HttpStatus.FOUND)
-                    .body(new ApiResponse("Found",productsByCategoryAndBrand));
+                    .body(new ApiResponse("Found",productDtosByCategoryAndBrand));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error:", e.getMessage()));
@@ -122,13 +134,14 @@ public class ProductController {
     ){
         try {
             List<Product> productsByName = productService.getProductsByName(name);
+            List<ProductDto> productDtos = productsByName.stream().map(productMapper::toProductDto).toList();
             // method implemented in service doesn't provide any exception so
-            if(productsByName.isEmpty()){
+            if(productDtos.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new ApiResponse("Not Found", null));
             }
             return ResponseEntity.status(HttpStatus.FOUND)
-                    .body(new ApiResponse("Found",productsByName));
+                    .body(new ApiResponse("Found",productDtos));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error:", e.getMessage()));
@@ -141,13 +154,14 @@ public class ProductController {
     ){
         try {
             List<Product> productsByBrand = productService.getProductsByBrand(brand);
+            List<ProductDto> productDtos = productsByBrand.stream().map(productMapper::toProductDto).toList();
             // method implemented in service doesn't provide any exception so
-            if(productsByBrand.isEmpty()){
+            if(productDtos.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new ApiResponse( "product with brandName: " +brand + " NOT Found", null));
             }
             return ResponseEntity.status(HttpStatus.FOUND)
-                    .body(new ApiResponse("product with brandName: " +brand + ", Found",productsByBrand));
+                    .body(new ApiResponse("product with brandName: " +brand + ", Found",productDtos));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error:", e.getMessage()));
@@ -160,13 +174,14 @@ public class ProductController {
     ){
         try {
             List<Product> productsByCategory = productService.getProductsByCategory(category);
+            List<ProductDto> productDtos = productsByCategory.stream().map(productMapper::toProductDto).toList();
             // method implemented in service doesn't provide any exception so
-            if(productsByCategory.isEmpty()){
+            if(productDtos.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new ApiResponse("Not Found", null));
             }
             return ResponseEntity.status(HttpStatus.FOUND)
-                    .body(new ApiResponse("Found",productsByCategory));
+                    .body(new ApiResponse("Found",productDtos));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error:", e.getMessage()));
@@ -179,7 +194,7 @@ public class ProductController {
             @RequestParam String name
     ){
         try {
-            var products = productService.countProductsByBrandAndName(brand, name);
+            Long products = productService.countProductsByBrandAndName(brand, name);
             return ResponseEntity.status(HttpStatus.FOUND)
                     .body(new ApiResponse("Product Count",products));
         } catch (Exception e) {

@@ -59,10 +59,6 @@ public class ProductServiceImpl implements ProductService {
                 category
         );
     }
-    @Override
-    public List<ProductDto> getProductDtos(List<Product> products){
-        return products.stream().map(productMapper::toProductDto).toList();
-    }
 
     @Override
     public Product getProductById(Long id) {
@@ -104,6 +100,7 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.countByBrandAndName(brand, name);
     }
 
+    @Transactional
     @Override
     public List<Product> getAllProducts() {
         return productRepository.findAll();

@@ -1,6 +1,5 @@
 package com.myproject.simpleonlineshop.dto;
 
-import com.myproject.simpleonlineshop.model.Category;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -15,7 +14,6 @@ public class ProductDto {
     private String description;
     private BigDecimal price;
     private int quantityInInventory;
-
-    private Category category;
-    private List<ImageDto> images;
+    private CategoryDto category;
+    private List<ImageDto> imagesDtos;
 }
