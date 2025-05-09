@@ -39,15 +39,15 @@ public class ProductMapperImpl implements ProductMapper {
     }
 
     private ProductDto toProductDto1(Product product) {
-//        ProductDto productDto = new ProductDto();
-//        productDto.setId(product.getId());
-//        productDto.setName(product.getName());
-//        productDto.setBrand(product.getBrand());
-//        productDto.setPrice(product.getPrice());
-//        productDto.setCategory(toCategoryDto(product.getCategory()));
-//        productDto.setDescription(product.getDescription());
-//        productDto.setImagesDtos(product.getImages().stream().map(image -> toImageDto(image)).toList());
-        return modelMapper.map(product, ProductDto.class);
+        ProductDto productDto = new ProductDto();
+        productDto.setId(product.getId());
+        productDto.setName(product.getName());
+        productDto.setBrand(product.getBrand());
+        productDto.setPrice(product.getPrice());
+        productDto.setCategory(toCategoryDto(product.getCategory()));
+        productDto.setDescription(product.getDescription());
+        productDto.setImagesDtos(product.getImages().stream().map(image -> toImageDto(image)).toList());
+        return productDto;
     }
     private CategoryDto toCategoryDto(Category category){
         CategoryDto categoryDto = new CategoryDto();

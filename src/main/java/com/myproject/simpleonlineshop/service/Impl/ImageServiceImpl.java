@@ -58,7 +58,7 @@ public class ImageServiceImpl implements ImageService {
                 image.setImage(new SerialBlob(file.getBytes()));
                 image.setProduct(product); // this product is the product that we found
                  // now we need to build a downloadUrl
-                 String downloadUrl = "/api/v1/images/image/download/";
+                 String downloadUrl = "/api/v1/images/download/";
                  String specificImageDownloadUrl = downloadUrl + image.getId();
                  image.setDownloadUrl(specificImageDownloadUrl);
                  // but the problem is id is generated after save() method

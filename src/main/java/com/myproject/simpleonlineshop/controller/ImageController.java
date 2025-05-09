@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,6 +47,7 @@ public class ImageController {
         }
 
     }
+    @Transactional
     @GetMapping("/download/{imageId}")
     public ResponseEntity<Resource> downloadImage(
             @PathVariable("imageId") Long imageId) throws SQLException {
@@ -65,29 +67,20 @@ public class ImageController {
         /*
         .contentType(MediaType.parseMediaType(imageById.getFileType()))
             Sets the Content-Type header of the response (i.e., what kind of file is being returned).
-
             imageById.getFileType() returns a string, e.g., "image/jpeg", "application/pdf", etc.
-
             MediaType.parseMediaType(...) converts that string into a MediaType object.
-
-            Purpose: Tell the browser/client what type of file is being sent.
+            trying to declare  what type of file is being sent to browser/client
 
         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imageById.getFileName() + "\"")
                 This sets the Content-Disposition header.
-
                 "attachment; filename=\"..." tells the browser to:
-
                 Treat the content as a downloadable file.
-
                 Use the specified filename (imageById.getFileName()), e.g., "my_photo.jpg".
-
-                Purpose: Make the browser show a download dialog with a custom file name.
+                Making the browser show a download dialog with a custom file name.
 
             .body(resource)
                     resource is typically an object that implements the Resource interface (like ByteArrayResource, InputStreamResource, etc.).
-
                     This sets the actual body content of the HTTP response — the file data.
-
                     Purpose: Send the binary data (like an image or document) to the client.
          */
     }
@@ -118,7 +111,7 @@ public class ImageController {
             Client Awareness – Lets the client know the failure is not their fault (unlike 4xx errors, which indicate client-side issues).
          */
     }
-    @DeleteMapping("/image/{imageId}/delete")
+    @DeleteMapping("/{imageId}")
     public ResponseEntity<ApiResponse> deleteImage(@PathVariable("imageId") Long imageId){
         // first we find image
         try {
