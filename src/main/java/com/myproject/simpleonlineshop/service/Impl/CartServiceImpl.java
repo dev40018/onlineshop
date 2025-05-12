@@ -2,6 +2,7 @@ package com.myproject.simpleonlineshop.service.Impl;
 
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 import com.myproject.simpleonlineshop.model.Cart;
+import com.myproject.simpleonlineshop.model.CartItem;
 import com.myproject.simpleonlineshop.repository.CartItemRepository;
 import com.myproject.simpleonlineshop.repository.CartRepository;
 import com.myproject.simpleonlineshop.service.CartService;
@@ -39,7 +40,9 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public BigDecimal getTotalPrice(Long id) {
-        return null;
+        Cart cart = getCartById(id);
+        return cart.getTotalCartPrice();
+
     }
 
     @Override
