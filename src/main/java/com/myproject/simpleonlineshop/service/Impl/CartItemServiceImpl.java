@@ -11,6 +11,8 @@ import com.myproject.simpleonlineshop.service.CartService;
 import com.myproject.simpleonlineshop.service.ProductService;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 public class CartItemServiceImpl implements CartItemService {
     private final CartItemRepository cartItemRepository;
@@ -54,22 +56,43 @@ public class CartItemServiceImpl implements CartItemService {
         cartItem.setTotalCartItemPrice();
         cartById.addItem(cartItem);
         cartItemRepository.save(cartItem);
-        cartRepository.save(cartById)l
+        cartRepository.save(cartById);
 
     }
 
     @Override
     public void removeItemFromCart(Long cartId, Long productId) {
-
+        Cart cartById = cartService.getCartById(cartId);
+        CartItem itemToRemove = getCartItem(cartId, productId);
+        cartById.removeItem(itemToRemove);
+        cartRepository.save(cartById);
     }
 
     @Override
     public void updateItemQuantity(Long cartId, Long productId, int quantity) {
+        Cart cartById = cartService.getCartById(cartId);
+        cartById.getCartItems()
+                .stream()
+                .filter(cartItem -> cartItem.getProduct().getId().equals(productId))
+                .findFirst()
+                .ifPresent(cartItem -> {
+                            cartItem.setQuantity(quantity);
+                                    cartItem.setUnitPrice(cartItem.getProduct().getPrice());
+                                    cartItem.setTotalCartItemPrice();
+                        });
+        BigDecimal totalCartPrice = cartById.getTotalCartPrice();
+        cartById.setTotalCartPrice(totalCartPrice);
+        cartRepository.save(cartById);
 
     }
 
     @Override
     public CartItem getCartItem(Long cartId, Long productId) {
-        return null;
+        Cart cartById = cartService.getCartById(cartId);
+        return cartById.getCartItems()
+                .stream()
+                .filter(cartItem -> cartItem.getProduct().getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("No Such ProductItem Exists"));
     }
 }
