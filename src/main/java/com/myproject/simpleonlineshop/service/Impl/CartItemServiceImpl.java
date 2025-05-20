@@ -80,7 +80,7 @@ public class CartItemServiceImpl implements CartItemService {
                                     cartItem.setUnitPrice(cartItem.getProduct().getPrice());
                                     cartItem.setTotalCartItemPrice();
                         });
-        BigDecimal totalCartPrice = cartById.getTotalCartPrice();
+        BigDecimal totalCartPrice = cartById.getCartItems().stream().map(CartItem::getTotalCartItemPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
         cartById.setTotalCartPrice(totalCartPrice);
         cartRepository.save(cartById);
 

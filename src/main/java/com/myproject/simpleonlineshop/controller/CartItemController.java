@@ -25,7 +25,7 @@ public class CartItemController {
 
     @PostMapping("/addItemToCartByCartId")
     public ResponseEntity<ApiResponse> addItemToCart(
-            @RequestParam(required = false) Long cartId,
+            @RequestParam(required = false) Long cartId, // we should initialize the cart when the user logs in where user has no cart previously
             @RequestParam Long productId,
             @RequestParam int quantity){
         try {
