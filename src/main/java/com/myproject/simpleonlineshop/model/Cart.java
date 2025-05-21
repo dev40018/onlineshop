@@ -35,6 +35,9 @@ public class Cart {
     private Set<CartItem> cartItems = new HashSet<>();
 
 
+    @OneToOne
+    @JoinColumn(name="user_id")
+    private User user;
 
     // we are defining these methods as a specific behaviour of this class
     public void addItem(CartItem item) {
