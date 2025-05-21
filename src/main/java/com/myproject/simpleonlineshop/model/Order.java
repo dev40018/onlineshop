@@ -23,14 +23,12 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
-    private LocalDateTime orderDate;
+    private LocalDateTime orderDateTime;
     private BigDecimal orderTotalAmount;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order", orphanRemoval = true)
     private Set<OrderItem> orderItems = new HashSet<>();
-
-
 
 
 }
