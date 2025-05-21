@@ -10,7 +10,6 @@ import com.myproject.simpleonlineshop.repository.OrderRepository;
 import com.myproject.simpleonlineshop.repository.ProductRepository;
 import com.myproject.simpleonlineshop.service.CartService;
 import com.myproject.simpleonlineshop.service.OrderService;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -82,6 +81,11 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(
                         () -> new ResourceNotFoundException("No such order Exists")
                 );
+    }
+
+    @Override
+    public List<Order> getUsersOrder(Long userId){
+        return orderRepository.findByUserId(userId);
     }
 
 }
