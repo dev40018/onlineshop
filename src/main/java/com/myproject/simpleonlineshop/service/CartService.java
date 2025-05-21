@@ -9,4 +9,6 @@ public interface CartService {
     void clearCartById(Long id);
     BigDecimal getTotalPrice(Long id);
     Long initilizeCart();
+
+    Cart getCartByUserId(Long userId);
 }

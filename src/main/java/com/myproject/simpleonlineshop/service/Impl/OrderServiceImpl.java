@@ -8,30 +8,44 @@ import com.myproject.simpleonlineshop.model.OrderItem;
 import com.myproject.simpleonlineshop.model.Product;
 import com.myproject.simpleonlineshop.repository.OrderRepository;
 import com.myproject.simpleonlineshop.repository.ProductRepository;
+import com.myproject.simpleonlineshop.service.CartService;
 import com.myproject.simpleonlineshop.service.OrderService;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final CartService cartService;
 
-    public OrderServiceImpl(OrderRepository orderRepository, ProductRepository productRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, ProductRepository productRepository, CartService cartService) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
+        this.cartService = cartService;
     }
 
     @Override
     public Order placeOrder(Long userId) {
-        return null;
+        Cart cart = cartService.getCartByUserId(userId);
+        Order order = createOrder(cart);
+        List<OrderItem> orderItemsList = createOrderItems(order, cart);
+        order.setOrderItems(new HashSet<>(orderItemsList));
+        order.setOrderTotalAmount(calculateTotalAmount(orderItemsList));
+        Order savedOrder = orderRepository.save(order);
+
+        // we don't need the cart
+        cartService.clearCartById(cart.getId());
+        return savedOrder;
     }
     private Order createOrder(Cart cart){
         Order order  = new Order();
+        order.setUser(cart.getUser());
         order.setOrderStatus(OrderStatus.PENDING);
         order.setOrderDateTime(LocalDateTime.now());
         return order;
