@@ -81,4 +81,30 @@ public class myModelMapperImpl implements MyModelMapper {
                 .productId(orderItem.getOrderItemId())
                 .build();
     }
+
+    @Override
+    public CreateUserRequest toCreateUserRequest(User user) {
+        return CreateUserRequest.builder()
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .password(user.getPassword())
+                .build();
+    }
+    @Override
+    public UpdateUserRequest toUpdateUserRequest(User user) {
+        return UpdateUserRequest.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .build();
+    }
+
+    @Override
+    public UserDto toUserDto(User user) {
+        return UserDto.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .build();
+    }
 }
