@@ -1,12 +1,8 @@
 package com.myproject.simpleonlineshop.mapper.impl;
 
-import com.myproject.simpleonlineshop.dto.CategoryDto;
-import com.myproject.simpleonlineshop.dto.ImageDto;
-import com.myproject.simpleonlineshop.dto.ProductDto;
-import com.myproject.simpleonlineshop.mapper.ProductMapper;
-import com.myproject.simpleonlineshop.model.Category;
-import com.myproject.simpleonlineshop.model.Image;
-import com.myproject.simpleonlineshop.model.Product;
+import com.myproject.simpleonlineshop.dto.*;
+import com.myproject.simpleonlineshop.mapper.MyModelMapper;
+import com.myproject.simpleonlineshop.model.*;
 import com.myproject.simpleonlineshop.repository.ImageRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -14,12 +10,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ProductMapperImpl implements ProductMapper {
+public class myModelMapperImpl implements MyModelMapper {
 
     private final ImageRepository imageRepository;
     private final ModelMapper modelMapper;
 
-    public ProductMapperImpl(ImageRepository imageRepository, ModelMapper modelMapper) {
+    public myModelMapperImpl(ImageRepository imageRepository, ModelMapper modelMapper) {
 
         this.imageRepository = imageRepository;
         this.modelMapper = modelMapper;
@@ -67,5 +63,22 @@ public class ProductMapperImpl implements ProductMapper {
     @Override
     public Product toProduct(ProductDto productDto) {
         return null;
+    }
+
+    @Override
+    public OrderDto toOrderDto(Order order) {
+        return OrderDto.builder()
+                .id(order.getOrderId())
+                .items(order.getOrderItems().stream().map(this::toOrderItemDto).toList())
+                .build();
+    }
+    @Override
+    public OrderItemsDto toOrderItemDto(OrderItem orderItem){
+        return OrderItemsDto.builder()
+                .price(orderItem.getUnitPrice())
+                .productName(orderItem.getProduct().getName())
+                .quantity(orderItem.getQuantity())
+                .productId(orderItem.getOrderItemId())
+                .build();
     }
 }

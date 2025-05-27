@@ -7,7 +7,7 @@ import com.myproject.simpleonlineshop.dto.ProductDto;
 import com.myproject.simpleonlineshop.dto.UpdateProductRequestDto;
 import com.myproject.simpleonlineshop.exception.AlreadyExistsException;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
-import com.myproject.simpleonlineshop.mapper.ProductMapper;
+import com.myproject.simpleonlineshop.mapper.MyModelMapper;
 import com.myproject.simpleonlineshop.model.Product;
 import com.myproject.simpleonlineshop.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -24,11 +24,11 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-    private final ProductMapper productMapper;
+    private final MyModelMapper productMapper;
 
-    public ProductController(ProductService productService, ProductMapper productMapper) {
+    public ProductController(ProductService productService, MyModelMapper MyModelMapper) {
         this.productService = productService;
-        this.productMapper = productMapper;
+        this.productMapper = MyModelMapper;
     }
 
     @Transactional

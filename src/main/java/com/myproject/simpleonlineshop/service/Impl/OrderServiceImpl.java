@@ -3,6 +3,7 @@ package com.myproject.simpleonlineshop.service.Impl;
 import com.myproject.simpleonlineshop.dto.OrderDto;
 import com.myproject.simpleonlineshop.enums.OrderStatus;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
+import com.myproject.simpleonlineshop.mapper.MyModelMapper;
 import com.myproject.simpleonlineshop.model.Cart;
 import com.myproject.simpleonlineshop.model.Order;
 import com.myproject.simpleonlineshop.model.OrderItem;
@@ -17,17 +18,20 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final CartService cartService;
+    private final MyModelMapper modelMapper;
 
-    public OrderServiceImpl(OrderRepository orderRepository, ProductRepository productRepository, CartService cartService) {
+    public OrderServiceImpl(OrderRepository orderRepository, ProductRepository productRepository, CartService cartService, MyModelMapper modelMapper) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.cartService = cartService;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -78,13 +82,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto getOrder(Long orderId) {
-         orderRepository.findById(orderId);
-        return null;
+        return orderRepository.findById(orderId)
+                .map(modelMapper::toOrderDto)
+                .orElseThrow(() -> new ResourceNotFoundException("No such Order Exists"));
     }
 
     @Override
-    public List<Order> getUsersOrder(Long userId){
-        return orderRepository.findByUserId(userId);
+    public List<OrderDto> getUsersOrder(Long userId) {
+        return orderRepository.findByUserId(userId).stream().map(modelMapper::toOrderDto).toList();
     }
+
 
 }

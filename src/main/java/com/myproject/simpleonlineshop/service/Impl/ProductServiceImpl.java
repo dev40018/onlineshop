@@ -1,11 +1,10 @@
 package com.myproject.simpleonlineshop.service.Impl;
 
 import com.myproject.simpleonlineshop.dto.AddProductRequestDto;
-import com.myproject.simpleonlineshop.dto.ProductDto;
 import com.myproject.simpleonlineshop.dto.UpdateProductRequestDto;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 
-import com.myproject.simpleonlineshop.mapper.ProductMapper;
+import com.myproject.simpleonlineshop.mapper.MyModelMapper;
 import com.myproject.simpleonlineshop.model.Category;
 import com.myproject.simpleonlineshop.model.Product;
 import com.myproject.simpleonlineshop.repository.CategoryRepository;
@@ -23,11 +22,11 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final ProductMapper productMapper;
+    private final MyModelMapper productMapper;
 
 
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, ProductMapper productMapper) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, MyModelMapper productMapper) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.productMapper = productMapper;
