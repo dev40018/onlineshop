@@ -1,5 +1,6 @@
 package com.myproject.simpleonlineshop.service.Impl;
 
+import com.myproject.simpleonlineshop.dto.OrderDto;
 import com.myproject.simpleonlineshop.enums.OrderStatus;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 import com.myproject.simpleonlineshop.model.Cart;
@@ -76,11 +77,9 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public Order getOrder(Long orderId) {
-        return orderRepository.findById(orderId)
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("No such order Exists")
-                );
+    public OrderDto getOrder(Long orderId) {
+         orderRepository.findById(orderId);
+        return null;
     }
 
     @Override
