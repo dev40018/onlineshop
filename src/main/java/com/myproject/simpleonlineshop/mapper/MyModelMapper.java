@@ -23,4 +23,8 @@ public interface MyModelMapper {
     UpdateUserRequest toUpdateUserRequest(User user);
 
     UserDto toUserDto(User user);
+
+    CartDto toCartDto(Cart cart);
+
+    CartItemDto toCartItemDto(CartItem cartItem);
 }

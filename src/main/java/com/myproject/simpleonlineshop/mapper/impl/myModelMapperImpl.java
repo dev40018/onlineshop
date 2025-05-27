@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class myModelMapperImpl implements MyModelMapper {
@@ -105,6 +106,25 @@ public class myModelMapperImpl implements MyModelMapper {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
+                .orders(user.getOrders().stream().map(this::toOrderDto).toList())
+                .cart(toCartDto(user.getCart()))
+                .build();
+    }
+    @Override
+    public CartDto toCartDto(Cart cart){
+        return CartDto.builder()
+                .cartId(cart.getId())
+                .items(cart.getCartItems().stream().map(this::toCartItemDto).collect(Collectors.toSet()))
+                .build();
+    }
+    @Override
+    public CartItemDto toCartItemDto(CartItem cartItem){
+        return CartItemDto.builder()
+                .itemId(cartItem.getId())
+                .unitPrice(cartItem.getUnitPrice())
+                .product(toProductDto( cartItem.getProduct()))
+                .quantity(cartItem.getQuantity())
+
                 .build();
     }
 }
