@@ -5,9 +5,13 @@ package com.myproject.simpleonlineshop.controller;
 
 import com.myproject.simpleonlineshop.dto.ApiResponse;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
+import com.myproject.simpleonlineshop.model.Cart;
+import com.myproject.simpleonlineshop.model.User;
+import com.myproject.simpleonlineshop.repository.UserRepository;
 import com.myproject.simpleonlineshop.service.CartItemService;
 import com.myproject.simpleonlineshop.service.CartService;
 
+import com.myproject.simpleonlineshop.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,23 +21,26 @@ import org.springframework.web.bind.annotation.*;
 public class CartItemController {
     private final CartItemService cartItemService;
     private final CartService cartService;
+    private  final UserService userService;
 
-    public CartItemController(CartItemService cartItemService, CartService cartService) {
+    public CartItemController(CartItemService cartItemService, CartService cartService, UserService userService) {
         this.cartItemService = cartItemService;
         this.cartService = cartService;
+        this.userService = userService;
     }
 
-    @PostMapping("/addItemToCartByCartId")
+    @PostMapping
     public ResponseEntity<ApiResponse> addItemToCart(
-            @RequestParam(required = false) Long cartId, // we should initialize the cart when the user logs in where user has no cart previously
+
             @RequestParam Long productId,
             @RequestParam int quantity){
+
+
         try {
-            //if there is no cart, create one and then send its id to addItemToCart();
-            if(cartId == null){
-                cartId = cartService.initilizeCart();
-            }
-            cartItemService.addItemToCart(cartId, productId, quantity);
+            User userById = userService.getUserById(1L);
+            Cart newCart = cartService.initilizeCart(userById);
+
+            cartItemService.addItemToCart(newCart.getId(), productId, quantity);
             return ResponseEntity.ok(new ApiResponse("Item Added to Cart", null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

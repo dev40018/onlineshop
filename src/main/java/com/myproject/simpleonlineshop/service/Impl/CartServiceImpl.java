@@ -2,7 +2,7 @@ package com.myproject.simpleonlineshop.service.Impl;
 
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 import com.myproject.simpleonlineshop.model.Cart;
-import com.myproject.simpleonlineshop.model.CartItem;
+import com.myproject.simpleonlineshop.model.User;
 import com.myproject.simpleonlineshop.repository.CartItemRepository;
 import com.myproject.simpleonlineshop.repository.CartRepository;
 import com.myproject.simpleonlineshop.service.CartService;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 
@@ -50,11 +51,14 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Long initilizeCart(){
-        Cart newCart = new Cart();
-        long newCartId = generatedCartId.incrementAndGet();
-        newCart.setId(newCartId);
-        return cartRepository.save(newCart).getId();
+    public Cart initilizeCart(User user){
+        return Optional.ofNullable(getCartByUserId(user.getId())) // check if there is any cart by that user
+                .orElseGet(() -> { // if not, then create a cart and set its user which is passed by method parameter
+                        Cart cart = new Cart();
+                        cart.setId(generatedCartId.incrementAndGet());
+                        cart.setUser(user);
+                        return cartRepository.save(cart);
+                });
     }
 
     @Override
