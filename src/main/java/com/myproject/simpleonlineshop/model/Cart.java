@@ -20,11 +20,11 @@ import java.util.Set;
 @Table(name = "t_cart")
 public class Cart {
 
-    @Id
     /*
-    since you are using a cartItemId generator in cart initializeCart() in CartServiceImpl
-    NOTE: this cause concurrency problems because both ops trying to change same field
-     */
+since you are using a cartItemId generator in cart initializeCart() in CartServiceImpl
+NOTE: this cause concurrency problems because both ops trying to change same field
+ */
+    @Id
     private Long id;
 
     // we give it default value of zero
