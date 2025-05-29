@@ -71,6 +71,10 @@ public class myModelMapperImpl implements MyModelMapper {
         return OrderDto.builder()
                 .id(order.getOrderId())
                 .items(order.getOrderItems().stream().map(this::toOrderItemDto).toList())
+                .userId(order.getUser().getId())
+                .orderDate(order.getOrderDateTime())
+                .OrderStatus(order.getOrderStatus().name())
+                .totalAmount(order.getOrderTotalAmount())
                 .build();
     }
     @Override
@@ -115,6 +119,8 @@ public class myModelMapperImpl implements MyModelMapper {
         return CartDto.builder()
                 .cartId(cart.getId())
                 .items(cart.getCartItems().stream().map(this::toCartItemDto).collect(Collectors.toSet()))
+                .userId(cart.getUser().getId())
+                .totalAmount(cart.getTotalCartPrice())
                 .build();
     }
     @Override
@@ -124,7 +130,6 @@ public class myModelMapperImpl implements MyModelMapper {
                 .unitPrice(cartItem.getUnitPrice())
                 .product(toProductDto( cartItem.getProduct()))
                 .quantity(cartItem.getQuantity())
-
                 .build();
     }
 }
