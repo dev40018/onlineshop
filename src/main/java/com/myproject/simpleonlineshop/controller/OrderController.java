@@ -4,6 +4,7 @@ package com.myproject.simpleonlineshop.controller;
 import com.myproject.simpleonlineshop.dto.ApiResponse;
 import com.myproject.simpleonlineshop.dto.OrderDto;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
+import com.myproject.simpleonlineshop.mapper.MyModelMapper;
 import com.myproject.simpleonlineshop.model.Order;
 import com.myproject.simpleonlineshop.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -19,15 +20,18 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final MyModelMapper modelMapper;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, MyModelMapper modelMapper) {
         this.orderService = orderService;
+        this.modelMapper = modelMapper;
     }
-    @PostMapping("/order")
+    @PostMapping
     public ResponseEntity<ApiResponse> createOrder(@RequestParam Long userId) {
         try {
             Order order =  orderService.placeOrder(userId);
-            return ResponseEntity.ok(new ApiResponse("Item Order Success!", order));
+            OrderDto orderDto = modelMapper.toOrderDto(order);
+            return ResponseEntity.ok(new ApiResponse("Item Order Success!", orderDto));
         } catch (Exception e) {
             return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error Occured!", e.getMessage()));
         }
