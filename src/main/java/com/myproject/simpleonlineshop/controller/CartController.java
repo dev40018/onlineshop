@@ -2,7 +2,9 @@ package com.myproject.simpleonlineshop.controller;
 
 
 import com.myproject.simpleonlineshop.dto.ApiResponse;
+import com.myproject.simpleonlineshop.dto.CartDto;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
+import com.myproject.simpleonlineshop.mapper.MyModelMapper;
 import com.myproject.simpleonlineshop.model.Cart;
 import com.myproject.simpleonlineshop.service.CartService;
 import org.hibernate.annotations.NotFound;
@@ -16,16 +18,19 @@ import java.math.BigDecimal;
 @RequestMapping("${api.prefix}/carts")
 public class CartController {
     private final CartService cartService;
+    private final MyModelMapper modelMapper;
 
-    public CartController(CartService cartService) {
+    public CartController(CartService cartService, MyModelMapper modelMapper) {
         this.cartService = cartService;
+        this.modelMapper = modelMapper;
     }
 
     @GetMapping("/{cartId}")
     public ResponseEntity<ApiResponse> getCart(@PathVariable("cartId") Long cartId){
         try {
             Cart cart = cartService.getCartById(cartId);
-            return ResponseEntity.ok(new ApiResponse("Cart Found", cart));
+            CartDto cartDto = modelMapper.toCartDto(cart);
+            return ResponseEntity.ok(new ApiResponse("Cart Found", cartDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(
@@ -34,7 +39,7 @@ public class CartController {
         }
     }
     @DeleteMapping("/{cartId}")
-    public ResponseEntity<ApiResponse> clearCart(@PathVariable("id") Long id){
+    public ResponseEntity<ApiResponse> clearCart(@PathVariable("cartId") Long id){
         try {
             cartService.clearCartById(id);
             return ResponseEntity.ok(new ApiResponse("cart id cleared", null));
