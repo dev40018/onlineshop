@@ -1,5 +1,6 @@
 package com.myproject.simpleonlineshop.service.Impl;
 
+
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 import com.myproject.simpleonlineshop.model.Cart;
 import com.myproject.simpleonlineshop.model.CartItem;
@@ -9,10 +10,12 @@ import com.myproject.simpleonlineshop.repository.CartRepository;
 import com.myproject.simpleonlineshop.service.CartItemService;
 import com.myproject.simpleonlineshop.service.CartService;
 import com.myproject.simpleonlineshop.service.ProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
+@Slf4j
 @Service
 public class CartItemServiceImpl implements CartItemService {
     private final CartItemRepository cartItemRepository;
@@ -34,6 +37,11 @@ public class CartItemServiceImpl implements CartItemService {
         // get the product
         Product product = productService.getProductById(productId);
 
+        if(product.getQuantityInInventory() < quantity){
+            throw new IllegalStateException("your cart Item Quantity is bigger than Product's quantity in inventory");
+        }
+
+
         // check if product is already in the cart
         CartItem cartItem = cartById.getCartItems()
                 .stream().
@@ -51,7 +59,13 @@ public class CartItemServiceImpl implements CartItemService {
         }
         //if yes increase the quantity
         else{
-            cartItem.setQuantity(cartItem.getQuantity() + quantity);
+
+            int cartItemQuantity = cartItem.getQuantity() + quantity;
+            if(cartItemQuantity > product.getQuantityInInventory()){
+                throw new IllegalStateException("item Quantity is bigger than Product quantity");
+            }
+            cartItem.setQuantity(cartItemQuantity);
+
         }
         cartItem.setTotalCartItemPrice();
         cartById.addItem(cartItem);
