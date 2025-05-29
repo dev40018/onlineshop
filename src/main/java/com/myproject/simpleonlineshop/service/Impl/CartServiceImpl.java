@@ -31,7 +31,7 @@ public class CartServiceImpl implements CartService {
         // if the cart has multiple items we are going to calculate the totalCartPrice and then save it with new totalPrice
         BigDecimal totalCartPrice = cart.getTotalCartPrice();
         cart.setTotalCartPrice(totalCartPrice);
-        return cartRepository.save(cart);
+        return cart;
     }
 
     @Transactional
@@ -40,7 +40,7 @@ public class CartServiceImpl implements CartService {
         Cart cart = getCartById(id);
         cartItemRepository.deleteAllByCartId(id);
         cart.getCartItems().clear();
-        cartRepository.deleteById(id);
+        cartRepository.deleteById(cart.getId());
     }
 
     @Override
