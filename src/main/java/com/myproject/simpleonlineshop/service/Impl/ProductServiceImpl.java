@@ -2,6 +2,7 @@ package com.myproject.simpleonlineshop.service.Impl;
 
 import com.myproject.simpleonlineshop.dto.AddProductRequestDto;
 import com.myproject.simpleonlineshop.dto.UpdateProductRequestDto;
+import com.myproject.simpleonlineshop.exception.AlreadyExistsException;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 
 import com.myproject.simpleonlineshop.mapper.MyModelMapper;
@@ -22,20 +23,21 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final MyModelMapper productMapper;
 
 
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, MyModelMapper productMapper) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
-        this.productMapper = productMapper;
     }
 
     @Override
     @Transactional
     public Product addProduct(AddProductRequestDto addProductRequestDto) {
 
+        if(checkIfProductExistsByNameAndBrand(addProductRequestDto.getName(), addProductRequestDto.getBrand())){
+            throw new AlreadyExistsException(addProductRequestDto.getBrand()+" "+addProductRequestDto.getName()+" Already exits");
+        }
 
         //check if the category is found in database, if yes, set it as a new product category
         Category category = Optional.ofNullable(categoryRepository.findByName(addProductRequestDto.getCategory().getName()))
@@ -48,7 +50,9 @@ public class ProductServiceImpl implements ProductService {
         addProductRequestDto.setCategory(category);
         return productRepository.save(convertAddProductRequestToProduct(addProductRequestDto, category));
     }
-    private Product convertAddProductRequestToProduct(AddProductRequestDto productRequest, Category category){
+    private Product convertAddProductRequestToProduct(
+            AddProductRequestDto productRequest,
+            Category category){
         return new Product(
                 productRequest.getName(),
                 productRequest.getBrand(),
@@ -57,6 +61,11 @@ public class ProductServiceImpl implements ProductService {
                 productRequest.getQuantityInInventory(),
                 category
         );
+    }
+
+
+    private boolean checkIfProductExistsByNameAndBrand(String name, String brand){
+        return productRepository.existsByNameAndBrand(name, brand);
     }
 
     @Override
