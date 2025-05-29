@@ -12,14 +12,18 @@ import com.myproject.simpleonlineshop.repository.OrderRepository;
 import com.myproject.simpleonlineshop.repository.ProductRepository;
 import com.myproject.simpleonlineshop.service.CartService;
 import com.myproject.simpleonlineshop.service.OrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
@@ -34,6 +38,7 @@ public class OrderServiceImpl implements OrderService {
         this.modelMapper = modelMapper;
     }
 
+    @Transactional
     @Override
     public Order placeOrder(Long userId) {
         Cart cart = cartService.getCartByUserId(userId);
@@ -42,8 +47,7 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderItems(new HashSet<>(orderItemsList));
         order.setOrderTotalAmount(calculateTotalAmount(orderItemsList));
         Order savedOrder = orderRepository.save(order);
-
-        // we don't need the cart
+        // we don't need the cart after it has been placed as an order;
         cartService.clearCartById(cart.getId());
         return savedOrder;
     }
@@ -58,7 +62,12 @@ public class OrderServiceImpl implements OrderService {
         return cart.getCartItems().stream()
                 .map(cartItem -> {
                     Product product = cartItem.getProduct();
-                    product.setQuantityInInventory(product.getQuantityInInventory() - cartItem.getQuantity());
+                    if(product.getQuantityInInventory() == 0){
+                        throw new IllegalStateException("Product's Quantity in Inventory is 0");
+                    }else{
+                        product.setQuantityInInventory(product.getQuantityInInventory() - cartItem.getQuantity());
+                    }
+
                     productRepository.save(product);
                     return new OrderItem(
                             cartItem.getQuantity(),
