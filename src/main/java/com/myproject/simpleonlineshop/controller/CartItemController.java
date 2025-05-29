@@ -4,6 +4,7 @@ package com.myproject.simpleonlineshop.controller;
 
 
 import com.myproject.simpleonlineshop.dto.ApiResponse;
+import com.myproject.simpleonlineshop.exception.AlreadyExistsException;
 import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 import com.myproject.simpleonlineshop.model.Cart;
 import com.myproject.simpleonlineshop.model.User;
@@ -42,7 +43,7 @@ public class CartItemController {
 
             cartItemService.addItemToCart(newCart.getId(), productId, quantity);
             return ResponseEntity.ok(new ApiResponse("Item Added to Cart", null));
-        } catch (ResourceNotFoundException e) {
+        } catch (ResourceNotFoundException | AlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse(e.getMessage(), null));
         }
