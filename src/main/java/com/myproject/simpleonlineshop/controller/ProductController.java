@@ -58,7 +58,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(new ApiResponse("Product Created Successfully", theProduct));
         } catch (AlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ApiResponse("Error:", e.getMessage()));
         }
     }
