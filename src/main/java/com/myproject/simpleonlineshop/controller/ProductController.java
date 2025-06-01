@@ -13,6 +13,7 @@ import com.myproject.simpleonlineshop.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,6 +52,7 @@ public class ProductController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse> addProduct(@RequestBody AddProductRequestDto product){
         try {
@@ -62,6 +64,7 @@ public class ProductController {
                     .body(new ApiResponse("Error:", e.getMessage()));
         }
     }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateProduct(
             @PathVariable("id") Long id,
@@ -75,6 +78,7 @@ public class ProductController {
                     .body(new ApiResponse("Error:", e.getMessage()));
         }
     }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable("id") Long id){
         try {
