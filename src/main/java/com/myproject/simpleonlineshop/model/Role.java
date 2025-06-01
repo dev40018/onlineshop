@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
+
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
+
 
 @Getter
 @Setter
@@ -23,9 +23,7 @@ public class Role {
     private String name;
 
     @ManyToMany(mappedBy = "roles")
-    @JoinTable()
     private Collection<User> users = new HashSet<>();
-
 
     public Role(String name){
         this.name = name;
