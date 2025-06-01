@@ -68,6 +68,6 @@ public class UserServiceImpl implements UserService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email).get();
     }
 }
