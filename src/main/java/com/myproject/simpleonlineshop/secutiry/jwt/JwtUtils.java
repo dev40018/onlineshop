@@ -5,15 +5,13 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -39,22 +37,26 @@ public class JwtUtils {
                 .signWith(key(), SignatureAlgorithm.HS256).compact();
 
     }
-    private Key key(){
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(JwtSecretKey));
-    }
+
     public String extractUsernameFromToken(String token){
         return Jwts.parserBuilder()
-                .setSigningKey(
-                        key()).build()
+                .setSigningKey(key())
+                .build()
                 .parseClaimsJws(token).getBody().getSubject();
     }
-    public boolean isTokenValid(String token ){
+    public boolean isTokenValid(String token){
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(key()).build().parseClaimsJws(token);
-            return true;
+                    .setSigningKey(key())
+                    .build()
+                    .parseClaimsJws(token);
+           return true;
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
             throw new JwtException(e.getMessage());
         }
+    }
+
+    private Key key(){
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(JwtSecretKey));
     }
 }
