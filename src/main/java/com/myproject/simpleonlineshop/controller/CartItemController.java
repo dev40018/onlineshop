@@ -13,6 +13,7 @@ import com.myproject.simpleonlineshop.service.CartItemService;
 import com.myproject.simpleonlineshop.service.CartService;
 
 import com.myproject.simpleonlineshop.service.UserService;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,13 +39,16 @@ public class CartItemController {
 
 
         try {
-            User userById = userService.getUserById(1L);
-            Cart newCart = cartService.initilizeCart(userById);
+            User user = userService.getAuthenticatedUser();
+            Cart newCart = cartService.initilizeCart(user);
 
             cartItemService.addItemToCart(newCart.getId(), productId, quantity);
             return ResponseEntity.ok(new ApiResponse("Item Added to Cart", null));
         } catch (ResourceNotFoundException | AlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }catch (JwtException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ApiResponse(e.getMessage(), null));
         }
     }

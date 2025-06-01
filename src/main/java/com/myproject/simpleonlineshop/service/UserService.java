@@ -9,4 +9,6 @@ public interface UserService {
     User createUser(CreateUserRequest request);
     User updateUser(UpdateUserRequest request, Long userId);
     void deleteUser(Long userId);
+
+    User getAuthenticatedUser();
 }

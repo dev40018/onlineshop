@@ -7,6 +7,8 @@ import com.myproject.simpleonlineshop.exception.ResourceNotFoundException;
 import com.myproject.simpleonlineshop.model.User;
 import com.myproject.simpleonlineshop.repository.UserRepository;
 import com.myproject.simpleonlineshop.service.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,5 +58,13 @@ public class UserServiceImpl implements UserService {
         userRepository.findById(userId).ifPresentOrElse(userRepository :: delete, () ->{
             throw new ResourceNotFoundException("User not found!");
         });
+    }
+
+    @Override
+    public User getAuthenticatedUser() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return userRepository.findByEmail(email);
     }
 }
