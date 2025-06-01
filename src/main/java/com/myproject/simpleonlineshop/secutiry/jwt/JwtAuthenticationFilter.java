@@ -15,15 +15,21 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private  JwtUtils jwtUtils;
-    private  MyUserDetailsService userDetailsService;
+    private final JwtUtils jwtUtils ;
+    private final MyUserDetailsService userDetailsService;
+
+    public JwtAuthenticationFilter(JwtUtils jwtUtils, MyUserDetailsService userDetailsService) {
+        this.jwtUtils = jwtUtils;
+        this.userDetailsService = userDetailsService;
+    }
 
 
     @Override
@@ -32,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = parseJwt(request);
-            if(StringUtils.hasText(jwt)&&jwtUtils.isTokenValid(jwt)){
+            if(StringUtils.hasText(jwt) && jwtUtils.isTokenValid(jwt)){
                 //if jwt is not empty and has text and its token is validated then we extract username
                 String email = jwtUtils.extractUsernameFromToken(jwt);
                 // after we extract the username, we load the user from database(if it exists)
@@ -41,6 +47,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(auth);
+//                if(userDetails instanceof MyUserDetails){
+//                    request.setAttribute("userId", ((MyUserDetails)userDetails).getId());
+//                }
             }
         } catch (JwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
