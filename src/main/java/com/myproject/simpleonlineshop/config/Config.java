@@ -2,9 +2,10 @@ package com.myproject.simpleonlineshop.config;
 
 import com.myproject.simpleonlineshop.secutiry.jwt.JwtAuthenticationEntryPoint;
 import com.myproject.simpleonlineshop.secutiry.jwt.JwtAuthenticationFilter;
-import com.myproject.simpleonlineshop.secutiry.user.MyUserDetails;
+import com.myproject.simpleonlineshop.secutiry.jwt.JwtUtils;
 import com.myproject.simpleonlineshop.secutiry.user.MyUserDetailsService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,16 +25,16 @@ import org.springframework.ui.ModelMap;
 
 import java.util.List;
 
-@Configuration
+
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
+@Configuration
 public class Config {
 
     private final MyUserDetailsService userDetailsService;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
-    public static final List<String> SECURED_URLS =
+    public static final  List<String> SECURED_URLS =
             List.of("/api/v1/carts/**", "/api/v1/cartItems/**");
-
 
     public Config(MyUserDetailsService userDetailsService, JwtAuthenticationEntryPoint authenticationEntryPoint) {
         this.userDetailsService = userDetailsService;
@@ -50,10 +51,7 @@ public class Config {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(){
-        return new JwtAuthenticationFilter();
-    }
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception{
@@ -69,7 +67,7 @@ public class Config {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception{
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> {exception.authenticationEntryPoint(authenticationEntryPoint);})
@@ -77,7 +75,7 @@ public class Config {
                 .authorizeHttpRequests(auth -> auth.requestMatchers(SECURED_URLS.toArray(String[]::new )).authenticated().anyRequest().permitAll());
         http.authenticationProvider(daoAuthenticationProvider());
         //before any filer, first go to jwtAuthenticationFilter
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
 
     }
