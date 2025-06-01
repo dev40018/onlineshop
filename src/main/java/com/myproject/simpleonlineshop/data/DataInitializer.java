@@ -46,7 +46,7 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
             user.setFirstName(i+"th FirstName");
             user.setLastName(i+"th LastName");
             user.setEmail(defaultEmail);
-            user.setPassword(passwordEncoder.encode(i+i+1+"pass"));
+            user.setPassword(passwordEncoder.encode("123456"));
             user.setRoles(Set.of(userRole));
             userRepository.save(user);
             System.out.println("default User " +i+" Created.");
@@ -64,7 +64,7 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
             user.setFirstName(i + "th Admin");
             user.setLastName(i + "th Adminico");
             user.setEmail(defaultEmail);
-            user.setPassword(passwordEncoder.encode(i + i + 1 + "pass"));
+            user.setPassword(passwordEncoder.encode("123456"));
             user.setRoles(Set.of(adminRole));
             userRepository.save(user);
             System.out.println("default Admin " + i + " Created.");
