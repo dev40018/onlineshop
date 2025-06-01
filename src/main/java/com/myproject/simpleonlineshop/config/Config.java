@@ -29,7 +29,10 @@ public class Config {
 
     private final MyUserDetailsService userDetailsService;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
-    public static final List<String> SECURED_URLS = List.of("");
+    public static final List<String> SECURED_URLS =
+            List.of("/api/v1/carts/**", "/api/v1/cartItems/**");
+
+
     public Config(MyUserDetailsService userDetailsService, JwtAuthenticationEntryPoint authenticationEntryPoint) {
         this.userDetailsService = userDetailsService;
         this.authenticationEntryPoint = authenticationEntryPoint;
@@ -71,6 +74,7 @@ public class Config {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth.requestMatchers(SECURED_URLS.toArray(String[]::new )).authenticated().anyRequest().permitAll());
         http.authenticationProvider(daoAuthenticationProvider());
+        //before any filer, first go to jwtAuthenticationFilter
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
 
