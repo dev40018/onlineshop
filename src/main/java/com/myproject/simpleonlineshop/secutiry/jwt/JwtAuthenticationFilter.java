@@ -14,19 +14,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtUtils jwtUtils;
-    private final MyUserDetailsService userDetailsService;
 
-    public JwtAuthenticationFilter(JwtUtils jwtUtils, MyUserDetailsService userDetailsService) {
-        this.jwtUtils = jwtUtils;
-        this.userDetailsService = userDetailsService;
-    }
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private  JwtUtils jwtUtils;
+    private  MyUserDetailsService userDetailsService;
+
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
