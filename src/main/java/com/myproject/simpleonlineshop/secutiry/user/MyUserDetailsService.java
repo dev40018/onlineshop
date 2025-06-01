@@ -22,9 +22,10 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         // first we check if user exists by email
-        User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new UsernameNotFoundException("No Such User Found in Database"));
+        //User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new UsernameNotFoundException("No Such User Found in Database"));
+        User user =  userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("No Such User Found in Database"));
         // if exits we create a userDetails from
-        MyUserDetails.buildUserDetails(user);
-        return null;
+        MyUserDetails userDetails = MyUserDetails.buildUserDetails(user);
+        return userDetails;
     }
 }
