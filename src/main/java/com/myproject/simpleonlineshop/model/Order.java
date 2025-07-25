@@ -34,5 +34,4 @@ public class Order {
     @JoinColumn(name = "user_id") //user_id is the foreign key
     private User user;
 
-
 }
